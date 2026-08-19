@@ -1,0 +1,500 @@
+/* =====================================================================
+   SMART FARM — DESIGN TOKENS
+   Palette: warm cream base, deep forest green headings, soft leaf-green
+   cards, earth-brown accent for soil, water-blue for humidity, orange
+   only for "dry / needs attention", red reserved strictly for errors.
+   Type: Fraunces (warm, organic display) + Inter (clean body/UI) +
+   JetBrains Mono used ONLY for the live-data ticker, so "real-time"
+   reads as a deliberate, restrained signature rather than a tech skin.
+   ===================================================================== */
+
+:root {
+  --cream: #F6F1E4;
+  --cream-deep: #EFE7D2;
+  --forest: #1E3A2E;
+  --leaf: #4B7F52;
+  --leaf-dark: #3A6641;
+  --leaf-soft: #E4EEDD;
+  --earth: #9C6B3E;
+  --earth-soft: #F1E4D3;
+  --water: #3E7EA6;
+  --water-soft: #E4EFF5;
+  --warn: #D98A3D;
+  --warn-soft: #FBEEDF;
+  --danger: #C0463A;
+  --gray-dark: #53585B;
+  --ink: #24312A;
+  --ink-soft: #5B6B5E;
+  --white: #FFFFFF;
+
+  --radius: 18px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 10px rgba(30, 58, 46, 0.07);
+  --shadow-soft: 0 1px 4px rgba(30, 58, 46, 0.06);
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ===================== HEADER ===================== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 4px 20px;
+}
+
+.header__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__leaf {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  margin: 0;
+  color: var(--forest);
+  letter-spacing: -0.01em;
+}
+
+.header__subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border-radius: 999px;
+  padding: 7px 14px 7px 10px;
+  box-shadow: var(--shadow-soft);
+}
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  display: inline-block;
+}
+
+.live-dot.is-live {
+  background: var(--leaf);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.live-dot.is-stale {
+  background: var(--warn);
+}
+
+.live-dot.is-error {
+  background: var(--danger);
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(75, 127, 82, 0.45); }
+  70%  { box-shadow: 0 0 0 7px rgba(75, 127, 82, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(75, 127, 82, 0); }
+}
+
+.live-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ===================== GRID / CARDS ===================== */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: start; /* cards size to their own content, no row-stretching */
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.card--wide {
+  grid-column: 1 / -1;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---- Hero: soil moisture ring ---- */
+
+.card--hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(180deg, var(--white) 0%, var(--leaf-soft) 180%);
+}
+
+.ring-wrap {
+  position: relative;
+  width: 190px;
+  height: 190px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring__track {
+  fill: none;
+  stroke: var(--leaf-soft);
+  stroke-width: 14;
+}
+
+.ring__progress {
+  fill: none;
+  stroke: var(--leaf);
+  stroke-width: 14;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease, stroke 0.4s ease;
+}
+
+.ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring__value {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--forest);
+  line-height: 1;
+}
+
+.ring__label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* ---- Temp / Humidity stat cards ---- */
+
+.card--stat {
+  text-align: left;
+}
+
+.stat-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.card--water .eyebrow {
+  color: var(--water);
+}
+
+/* ---- Water pump card: compact, button centered against both text lines ---- */
+
+.pump-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pump-text .eyebrow {
+  margin: 0 0 5px;
+}
+
+.pump-mode-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.pump-toggle {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 6px rgba(30, 58, 46, 0.12);
+}
+
+.pump-toggle.is-off {
+  background: var(--gray-dark);
+  color: var(--white);
+}
+
+.pump-toggle.is-on {
+  background: var(--water);
+  color: var(--white);
+  box-shadow: 0 0 0 4px var(--water-soft), 0 2px 6px rgba(30, 58, 46, 0.12);
+}
+
+.pump-toggle:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.pump-toggle.is-pending {
+  opacity: 0.5;
+}
+
+.pump-toggle:disabled {
+  cursor: not-allowed;
+}
+
+.pump-warning {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--warn);
+  min-height: 0;
+}
+
+.pump-warning:empty {
+  margin: 0;
+}
+
+#pump-card,
+#mode-card {
+  align-self: stretch;
+}
+
+#pump-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ---- Mode toggle ---- */
+
+.toggle-group {
+  display: flex;
+  gap: 8px;
+  background: var(--cream-deep);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.toggle-btn.is-active {
+  background: var(--leaf);
+  color: var(--white);
+}
+
+.hint {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---- Settings sliders ---- */
+
+.field-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 14px 0 6px;
+}
+
+.field-label:first-of-type {
+  margin-top: 0;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--leaf);
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 13px 18px;
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+  min-height: 46px;
+}
+
+.btn:active { filter: brightness(0.94); }
+
+.btn--primary {
+  width: 100%;
+  margin-top: 16px;
+  background: var(--leaf);
+  color: var(--white);
+}
+
+.save-confirm {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--leaf-dark);
+  min-height: 16px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---- Sensor history ---- */
+
+.logs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.log-card {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.log-card__time {
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.log-card__metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.log-card__metric span:first-child {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.log-card__metric span:last-child {
+  font-weight: 600;
+  color: var(--forest);
+}
+
+/* ===================== FOOTER ===================== */
+
+.footer {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.footer p {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card--hero {
+    grid-column: 1 / -1;
+  }
+  .log-card {
+    grid-template-columns: 120px repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card--hero {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot.is-live { animation: none; }
+  .ring__progress { transition: none; }
+}

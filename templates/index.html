@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Farm — Irrigation Monitoring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ============ HEADER ============ -->
+    <header class="header">
+      <div class="header__title">
+        <span class="header__leaf">🌱</span>
+        <div>
+          <h1>Smart Farm</h1>
+          <p class="header__subtitle">Irrigation Monitoring &amp; Control</p>
+        </div>
+      </div>
+
+      <div class="live-indicator" id="live-indicator">
+        <span class="live-dot" id="live-dot"></span>
+        <span class="live-text" id="live-text">connecting…</span>
+      </div>
+    </header>
+
+    <main class="grid">
+
+      <!-- ============ HERO: SOIL MOISTURE RING ============ -->
+      <section class="card card--hero">
+        <p class="eyebrow">Soil Moisture</p>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 200 200" class="ring">
+            <circle cx="100" cy="100" r="86" class="ring__track" />
+            <circle cx="100" cy="100" r="86" class="ring__progress" id="soil-ring" />
+          </svg>
+          <div class="ring__center">
+            <span class="ring__value" id="soil-percent">--%</span>
+            <span class="ring__label" id="soil-status">Reading…</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TEMP / HUMIDITY ============ -->
+      <section class="card card--stat card--water">
+        <p class="eyebrow">Temperature</p>
+        <p class="stat-value" id="temp-value">--°C</p>
+      </section>
+
+      <section class="card card--stat card--water">
+        <p class="eyebrow">Humidity</p>
+        <p class="stat-value" id="humidity-value">--%</p>
+      </section>
+
+      <!-- ============ WATER PUMP (compact, button centered against text) ============ -->
+      <section class="card" id="pump-card">
+        <div class="pump-header">
+          <div class="pump-text">
+            <p class="eyebrow">Water Pump</p>
+            <p class="pump-mode-note">Mode: <strong id="pump-mode-label">AUTO</strong></p>
+          </div>
+
+          <button class="pump-toggle is-off" id="pump-toggle-btn" type="button" aria-pressed="false" disabled>
+            <span id="pump-toggle-text">OFF</span>
+          </button>
+        </div>
+
+        <p class="pump-warning" id="pump-warning"></p>
+      </section>
+
+      <!-- ============ MODE SELECTOR ============ -->
+      <section class="card" id="mode-card">
+        <p class="eyebrow">Mode</p>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="mode-auto-btn" data-mode="AUTO">Auto</button>
+          <button class="toggle-btn" id="mode-manual-btn" data-mode="MANUAL">Manual</button>
+        </div>
+        <p class="hint" id="mode-hint">The pump switches on and off by itself, based on your moisture threshold.</p>
+      </section>
+
+      <!-- ============ IRRIGATION SETTINGS ============ -->
+      <section class="card" id="settings-card">
+        <p class="eyebrow">Irrigation Settings</p>
+        <label class="field-label" for="threshold-input">
+          Turn pump ON below <span id="threshold-display">40</span>% moisture
+        </label>
+        <input type="range" id="threshold-input" min="0" max="100" value="40">
+
+        <label class="field-label" for="hysteresis-input">
+          Turn pump OFF once <span id="hysteresis-display">5</span>% above that
+        </label>
+        <input type="range" id="hysteresis-input" min="0" max="30" value="5">
+
+        <button class="btn btn--primary" id="save-threshold-btn">Save settings</button>
+        <p class="save-confirm" id="save-confirm"></p>
+      </section>
+
+      <!-- ============ SENSOR HISTORY ============ -->
+      <section class="card card--wide">
+        <p class="eyebrow">Sensor History</p>
+        <div class="logs" id="logs-container">
+          <p class="hint">Loading recent readings…</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <p>Smart Farm Irrigation Monitoring and Control System · ESP8266 · Flask · SQLite</p>
+    </footer>
+
+  </div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
