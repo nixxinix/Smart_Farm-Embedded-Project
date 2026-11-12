@@ -1,75 +1,115 @@
-# 🌱 Smart Farm Irrigation Monitoring and Control System
+<div align="center">
 
-A small IoT system that checks soil, temperature, and humidity, and can turn a water pump on or off — by itself (Auto) or by hand (Manual).
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1F6FEB,100:0D1117&height=170&section=header&text=Smart%20Farm&fontSize=38&fontColor=FFFFFF&fontAlignY=36&desc=Irrigation%20monitoring%20and%20control%20system&descSize=15&descAlignY=58" width="100%" alt="Smart Farm" />
 
-## What it does
+![ESP8266](https://img.shields.io/badge/ESP8266-NodeMCU-E7352C?style=flat-square&logo=espressif&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino-00878F?style=flat-square&logo=arduino&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white)
+![PythonAnywhere](https://img.shields.io/badge/Hosted-PythonAnywhere-1D9FD7?style=flat-square)
+
+**A small IoT system that monitors soil moisture, temperature, and humidity, and waters plants automatically or on demand.**
+
+[Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Hardware](#hardware) · [Getting Started](#getting-started) · [Usage](#usage)
+
+</div>
+
+---
+
+## Overview
+
+An ESP8266 reads soil and climate sensors every 2 seconds and controls a water pump through a relay. A Flask web dashboard shows live readings and lets you switch between **Auto** mode (the pump follows soil moisture thresholds) and **Manual** mode (you switch the pump yourself).
+
+## Features
 
 - Reads soil moisture, temperature, and humidity every 2 seconds.
-- Shows live readings on a web dashboard.
-- Controls a water pump (or LED for testing).
-- Two modes:
-  - **Auto** — pump turns on when soil is dry, off when soil is wet enough.
-  - **Manual** — you turn the pump on or off yourself.
-- Keeps a short history of past readings.
+- Live web dashboard with a connection indicator and a soil moisture ring.
+- **Auto mode:** the pump turns on when soil is dry and off when it is wet enough, with adjustable thresholds.
+- **Manual mode:** turn the pump on or off from the dashboard.
+- Sensor history of recent readings.
+- Keeps watering with the last known settings if the internet goes down.
 
-## What you need
+## Architecture
 
-**Hardware**
-- ESP8266 NodeMCU
-- Soil moisture sensor
-- DHT11 (temperature + humidity sensor)
-- I2C LCD (16x2)
-- Relay module + water pump (or an LED for testing)
+```mermaid
+flowchart LR
+    S[Soil moisture sensor<br/>DHT11] --> E[ESP8266<br/>NodeMCU]
+    E --> LCD[I2C LCD 16x2]
+    E --> R[Relay + pump]
+    E <-->|readings and settings| W[Flask server<br/>PythonAnywhere]
+    W <--> D[Web dashboard]
 
-**Software**
-- Arduino IDE (for the ESP8266 code)
-- Python + Flask (for the web server)
-- A PythonAnywhere account (to host the dashboard online)
+    style S fill:#0D1117,stroke:#30363D,color:#C9D1D9
+    style E fill:#0D1117,stroke:#E7352C,color:#C9D1D9
+    style LCD fill:#0D1117,stroke:#30363D,color:#C9D1D9
+    style R fill:#0D1117,stroke:#2EA44F,color:#C9D1D9
+    style W fill:#0D1117,stroke:#1F6FEB,color:#C9D1D9
+    style D fill:#0D1117,stroke:#1F6FEB,color:#C9D1D9
+```
 
-## Project files
+## Hardware
 
-| File | What it's for |
+| Component | Purpose |
 |---|---|
-| `esp8266/smart_irrigation.ino` | Code that runs on the ESP8266 |
-| `app.py` | The web server (Flask) |
-| `requirements.txt` | Python packages needed |
-| `templates/index.html` | The dashboard page |
-| `static/style.css` | Dashboard design |
-| `static/script.js` | Dashboard live updates |
+| ESP8266 NodeMCU | Microcontroller with Wi-Fi |
+| Soil moisture sensor | Soil moisture reading |
+| DHT11 | Temperature and humidity |
+| I2C LCD (16x2) | Local display |
+| Relay module + water pump | Irrigation (an LED works for testing) |
 
-## Setup (short version)
+> **Safety:** never wire a real pump directly to the ESP8266. Always use a relay or driver with power from a separate supply.
 
-1. **Wire the hardware** — connect the sensors, LCD, and relay/LED to the ESP8266 as shown in your pin table.
-2. **Edit the ESP8266 code** — open `smart_irrigation.ino` in Arduino IDE and set:
-   - Your Wi-Fi name and password
-   - Your server URL (local IP first, then your PythonAnywhere link later)
-3. **Run the server locally first**
-   ```
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Firmware | Arduino IDE, C++ (`smart_farm.ino`) |
+| Server | Python, Flask |
+| Dashboard | HTML, CSS, JavaScript |
+| Hosting | PythonAnywhere |
+
+## Project Structure
+
+```text
+Smart_Farm-Embedded-Project/
+├── smart_farm.ino         # ESP8266 firmware
+├── app.py                 # Flask web server
+├── requirements.txt       # Python dependencies
+├── templates/index.html   # Dashboard page
+└── static/
+    ├── style.css          # Dashboard styles
+    └── script.js          # Live updates
+```
+
+## Getting Started
+
+**Prerequisites:** Arduino IDE, Python with pip, and a PythonAnywhere account for online hosting.
+
+1. **Wire the hardware:** connect the sensors, LCD, and relay (or LED) to the ESP8266.
+2. **Configure the firmware:** open `smart_farm.ino` in Arduino IDE and set your Wi-Fi name, password, and server URL (your local IP first).
+3. **Run the server locally:**
+   ```bash
    pip install -r requirements.txt
    python app.py
    ```
-   Open `http://localhost:5000` in your browser to check it works.
-4. **Upload the ESP8266 code** through Arduino IDE.
-5. **Deploy to PythonAnywhere** — upload the same files, set up the web app, then update `SERVER_URL` in the ESP8266 code to your PythonAnywhere link.
-6. **Re-upload** the ESP8266 code with the new URL.
+   Check it at `http://localhost:5000`.
+4. **Upload the firmware** to the ESP8266 from Arduino IDE.
+5. **Deploy to PythonAnywhere:** upload the same files, set up the web app, then update `SERVER_URL` in the firmware to your PythonAnywhere link and upload it again.
 
-## How to use the dashboard
+## Usage
 
-1. **Check the top-right dot.** Green and pulsing = live data. Orange = waiting. Red = device offline.
-2. **Look at the soil ring.** Shows soil moisture as a percent. Below it says "Dry," "Very dry," or "Moist."
-3. **Check Temperature and Humidity** in their own boxes.
-4. **Pick a mode:**
-   - Tap **Auto** to let the system water the plant by itself.
-   - Tap **Manual** to control the pump yourself.
-5. **Control the pump (Manual mode only).** Tap the round button. It shows **ON** or **OFF**. While it's changing, the button dims and can't be tapped again — wait a few seconds for it to update.
-6. **Set your watering rule (Auto mode).** Under Irrigation Settings:
-   - First slider: soil % where the pump turns ON.
-   - Second slider: how much wetter the soil must get before the pump turns OFF.
-   - Tap **Save settings**.
-7. **Check history.** Scroll down to Sensor History to see past readings.
+1. **Status dot (top right):** green and pulsing means live data, orange means waiting, red means the device is offline.
+2. **Soil ring:** soil moisture as a percentage, labeled Dry, Very dry, or Moist.
+3. **Temperature and humidity** each have their own card.
+4. **Mode:** tap **Auto** to water automatically, or **Manual** to control the pump.
+5. **Pump button (Manual mode):** shows ON or OFF. It dims while changing; wait a few seconds for it to update.
+6. **Irrigation settings (Auto mode):** the first slider sets the soil % that turns the pump on; the second sets how much wetter the soil must get before it turns off. Tap **Save settings**.
+7. **Sensor history:** scroll down to see past readings.
 
-## Notes
+The dashboard refreshes about every 2 seconds, which is close enough to feel live.
 
-- The dashboard updates every ~2 seconds. This is normal — it is not truly instant, but close enough to feel live.
-- If the device goes offline, the ESP8266 keeps watering the plant on its own using the last known settings. It does not stop just because the internet is down.
-- Never wire a real pump directly to the ESP8266. Always use a relay or driver, with power from a separate supply.# Smart_Farm-Embedded-Project
+---
+
+<div align="center">
+<sub>Part of the <a href="https://github.com/nixxinix">nixxinix</a> project portfolio</sub>
+</div>
